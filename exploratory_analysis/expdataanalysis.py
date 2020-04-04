@@ -1,12 +1,21 @@
 import numpy as np
 import pandas as pd
-import json
 
-def read_file(path, delimeter=','):
+def read_file(path, typefile="", delimeter=','):
+    if (typefile!=""):
+        return _read_file(path, typefile, delimeter=delimeter)
     if (path[-4:]==".csv"):
+        return _read_file(path, typefile="csv", delimeter=delimeter)
+    if (path[-5:]==".json"):
+        return _read_file(path, typefile="json", delimeter=delimeter) 
+    if (typefile==""):
+        raise NameError("Please, use typefile parameter for reading this file")
+
+def _read_file(path, typefile, delimeter):
+    if (typefile == "csv"):
         print("reading csv file...")
         return pd.read_csv(path, delimeter)
-    if (path[-5:]==".json"):
+    if (typefile == "json"):
         print("reading json file...")
         return pd.read_json(path)
 
