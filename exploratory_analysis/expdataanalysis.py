@@ -1,35 +1,67 @@
 import numpy as np
 import pandas as pd
 
-def read_file(path, typefile="", delimeter=','):
+# Функция read_file используется для чтения файла в зависимости от его формата
+# path - путь к файлу
+# typefile - можно указать заранее тип файла (например, csv, json), чтобы не ориентироваться на расширение файла
+# optimization - позволяет по умолчанию выполнить оптимизацию файла в памяти
+# delimeter - делитель для csv файлов, по умолчанию "," (запятая)
+# При успешном определении типа файла либо при заданном типе файла функция возвращает результат
+# исполнения функции _read_file
+def read_file(path, typefile="", optimization=True, delimeter=','):
     if (typefile!=""):
-        return _read_file(path, typefile, delimeter=delimeter)
+        return _read_file(path, typefile, delimeter=delimeter, optimization=optimization)
     if (path[-4:]==".csv"):
-        return _read_file(path, typefile="csv", delimeter=delimeter)
+        return _read_file(path, typefile="csv", delimeter=delimeter, optimization=optimization)
     if (path[-5:]==".json"):
-        return _read_file(path, typefile="json", delimeter=delimeter) 
+        return _read_file(path, typefile="json", delimeter=delimeter, optimization=optimization) 
     if (typefile==""):
         raise NameError("Please, use typefile parameter for reading this file")
 
-def _read_file(path, typefile, delimeter):
+# Функция _read_file производит непосредственное чтение файлов с определенным ранее типом
+# path - путь к файлу
+# typefile - определенный ранее тип файла (например, csv, json)
+# optimization - выполнение или невыполнение оптимизации
+# delimeter - делитель для csv файлов
+# Функция возвращает считанный датафрейм
+def _read_file(path, typefile, optimization, delimeter):
     if (typefile == "csv"):
         print("reading csv file...")
-        return pd.read_csv(path, delimeter)
+        df = pd.read_csv(path, delimeter)
     if (typefile == "json"):
         print("reading json file...")
-        return pd.read_json(path)
+        df = pd.read_json(path)
+    if (optimization==True):
+        df = optimize_mem_usage(df)
+    get_mem_usage(df)
+    return df
+
+# Функция get_mem_usage предоставляет информацию о размере датафрейма
+# df - датафрейм, для которого требуется узнать информацию о размере
+# print_inf - параметр, в зависимости от которого происходит или не происходит вывод через Print
+# Функция возвращает размер датафрейма
+def get_mem_usage(df, print_inf = True):
+    df_mem = df.memory_usage().sum() / 1024**2
+    if (print_inf == True):
+        print("Memory usage of dataframe is {:.2f} MB".format(df_mem))
+    return df_mem
 
 
 from pandas.api.types import is_datetime64_any_dtype as is_datetime
 from pandas.api.types import is_categorical_dtype
 
-def optimize_mem_usage(df, use_float16=False):
+# Функция optimize_mem_usage используется для оптимизации используемой датафреймом памяти
+# df - оптимизируемый датафрейм
+# use_float16 - позволяет использовать или не использовать float16, по умолчанию не используется
+# print_inf - параметр, в зависимости от которого происходит или не происходит вывод через Print
+# Функция возвращает оптимизированный датафрейм
+def optimize_mem_usage(df, use_float16=False, print_inf = False):
     """
     Iterate through all the columns of a dataframe and modify the data type to reduce memory usage.        
     """
     
-    start_mem = df.memory_usage().sum() / 1024**2
-    print("Memory usage of dataframe is {:.2f} MB".format(start_mem))
+    start_mem = get_mem_usage(df, False)
+    
     
     for col in df.columns:
         if is_datetime(df[col]) or is_categorical_dtype(df[col]):
@@ -58,8 +90,11 @@ def optimize_mem_usage(df, use_float16=False):
         else:
             df[col] = df[col].astype("category")
 
-    end_mem = df.memory_usage().sum() / 1024**2
-    print("Memory usage after optimization is: {:.2f} MB".format(end_mem))
-    print("Decreased by {:.1f}%".format(100 * (start_mem - end_mem) / start_mem))
+    end_mem = get_mem_usage(df, False)
+    
+    if (print_inf == True):
+        print("Memory usage of dataframe is {:.2f} MB".format(start_mem))
+        print("Memory usage after optimization is: {:.2f} MB".format(end_mem))
+        print("Decreased by {:.1f}%".format(100 * (start_mem - end_mem) / start_mem))
     
     return df
