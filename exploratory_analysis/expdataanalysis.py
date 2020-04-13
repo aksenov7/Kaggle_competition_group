@@ -8,14 +8,14 @@ import pandas as pd
 # delimeter - делитель для csv файлов, по умолчанию "," (запятая)
 # При успешном определении типа файла либо при заданном типе файла функция возвращает результат
 # исполнения функции _read_file
-def read_file(path, typefile="", optimization=True, delimeter=','):
-    if (typefile!=""):
-        return _read_file(path, typefile, delimeter=delimeter, optimization=optimization)
+def read_file(path, type_file="", optimization=True, delimeter=','):
+    if (type_file!=""):
+        return _read_file(path, type_file, delimeter=delimeter, optimization=optimization)
     if (path[-4:]==".csv"):
-        return _read_file(path, typefile="csv", delimeter=delimeter, optimization=optimization)
+        return _read_file(path, type_file="csv", delimeter=delimeter, optimization=optimization)
     if (path[-5:]==".json"):
-        return _read_file(path, typefile="json", delimeter=delimeter, optimization=optimization) 
-    if (typefile==""):
+        return _read_file(path, type_file="json", delimeter=delimeter, optimization=optimization) 
+    if (type_file==""):
         raise NameError("Please, use typefile parameter for reading this file")
 
 # Функция _read_file производит непосредственное чтение файлов с определенным ранее типом
@@ -24,15 +24,15 @@ def read_file(path, typefile="", optimization=True, delimeter=','):
 # optimization - выполнение или невыполнение оптимизации
 # delimeter - делитель для csv файлов
 # Функция возвращает считанный датафрейм
-def _read_file(path, typefile, optimization, delimeter):
-    if (typefile == "csv"):
+def _read_file(path, type_file, optimization, delimeter):
+    if (type_file == "csv"):
         print("reading csv file...")
         df = pd.read_csv(path, delimeter)
-    if (typefile == "json"):
+    if (type_file == "json"):
         print("reading json file...")
         df = pd.read_json(path)
     if (optimization==True):
-        df = optimize_mem_usage(df)
+        df = optimize_mem_usage(df, True)
     get_mem_usage(df)
     return df
 
