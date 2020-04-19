@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Функция read_file используется для чтения файла в зависимости от его формата
 # path - путь к файлу
@@ -98,3 +100,13 @@ def optimize_mem_usage(df, use_float16=False, print_inf = False):
         print("Decreased by {:.1f}%".format(100 * (start_mem - end_mem) / start_mem))
     
     return df
+
+
+
+def get_corr_matrix(df, corr_method='pearson'):
+    return df.corr(method=corr_method)
+
+def plot_corr_matrix(df, figsize=(10,5), corr_method='pearson'):
+    f,ax = plt.subplots(figsize=figsize)
+    sns.heatmap(df.corr(method=corr_method),annot=True, linewidths=.1, fmt='.1f', ax=ax)
+    plt.show()
