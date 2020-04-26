@@ -13,3 +13,6 @@ titanic_df = eda.read_file("train_titanic.csv")
 print(eda.get_corr_matrix(titanic_df))
 eda.plot_corr_matrix(titanic_df)
 eda.plot_corr_matrix(titanic_df.drop(['PassengerId',  'Name', 'Ticket', 'Cabin'], axis=1))
+
+missing_data(titanic_df)
+#count_types(titanic_df)
