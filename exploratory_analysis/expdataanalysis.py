@@ -101,6 +101,29 @@ def optimize_mem_usage(df, use_float16=False, print_inf = False):
     
     return df
 
+# Выводит количество пропусков в данных по каждому слобцу
+# df - датафрейм
+def missing_data(df):
+    cellAll = df.shape[0]
+    for i in range(df.shape[1]):
+        name = df.columns[i]
+        cellNull = sum(df[name].isnull())
+        proc = int(cellNull / cellAll * 100)
+        print("{}: {} ({}%)".format(name, cellNull, proc))
+
+# Выводит количество данных каждого типа
+# df - датафрейм		
+def count_types(df):
+    d = dict()
+    cellAll = df.shape[0]
+    for i in range(df.shape[0]):
+        for j in range(df.shape[1]):
+            cellType = type(df.iloc[i, j]).__name__
+            if not cellType in d:
+                d[cellType] = 0
+            d[cellType] += 1
+    print(d)
+	
 
 
 def get_corr_matrix(df, corr_method='pearson'):
