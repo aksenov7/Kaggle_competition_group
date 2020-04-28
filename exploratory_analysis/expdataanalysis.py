@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import math
+from pandas.plotting import scatter_matrix
 
 # Функция read_file используется для чтения файла в зависимости от его формата
 # path - путь к файлу
@@ -125,11 +127,48 @@ def count_types(df):
     print(d)
 	
 
-
+# Функция get_corr_matrix вычисляет корреляцию между полями данных
+# df - исследуемый датафрейм
+# corr_method - метод корреляции, по умолчанию значение 'pearson'
+# Функция возвращает матрицу корреляции для вывода или дальнейшей обработки
 def get_corr_matrix(df, corr_method='pearson'):
     return df.corr(method=corr_method)
 
+# Функция plot_corr_matrix строит тепловую карту корреляционной матрицы
+# df - исследуемый датафрейм
+# figsize - размер выводимого графика, по умолчанию (10,5)
+# corr_method - метод корреляции, по умолчанию значение 'pearson'
+# Функция выводит тепловую карту
 def plot_corr_matrix(df, figsize=(10,5), corr_method='pearson'):
     f,ax = plt.subplots(figsize=figsize)
     sns.heatmap(df.corr(method=corr_method),annot=True, linewidths=.1, fmt='.1f', ax=ax)
     plt.show()
+
+# Функция plot_dependency_chart строит графики зависимости одного поля (y) от других полей датафрейма
+# df - датафрейм, содержащий x-столбцы
+# y_column_label - текст - название столбца
+# figsize - размер выводимого графика, по умолчанию (10,5)
+# chart_in_str - количество графиков в каждой строке, по умолчанию 3
+# Функция выводит полученные графики
+def plot_dependency_chart(df, y_column_label,figsize=(10,5), chart_in_str=3):
+    plt.figure(figsize=figsize)
+    iterator = 1
+    row = math.ceil(len(df.columns.drop([y_column_label])) / chart_in_str)
+    for column in df.columns.drop([y_column_label]):
+        plt.subplot(row,chart_in_str,iterator)
+        plt.plot(df.loc[:,column], df[y_column_label], '.')
+        plt.xlabel(column)
+        plt.ylabel(y_column_label)
+        iterator = iterator + 1
+    plt.show()
+
+# Функция plot_scatter_matrix строит матрицу графиков взаимной зависимости всех полей датафрейма ко всем полям
+# df - исследуемый датафрейм
+# figsize - размер выводимого графика, по умолчанию (10,5)
+# Функция выводит полученные графики
+def plot_scatter_matrix(df, figsize=(10,5)):
+    scatter_matrix(df, alpha=0.05, figsize=figsize)
+    plt.show()
+                                  
+        
+    
