@@ -12,13 +12,13 @@ from pandas.plotting import scatter_matrix
 # delimeter - делитель для csv файлов, по умолчанию "," (запятая)
 # При успешном определении типа файла либо при заданном типе файла функция возвращает результат
 # исполнения функции _read_file
-def read_file(path, type_file="", optimization=True, delimeter=','):
+def read_file(path, type_file="", optimization=False, **kwargs):
     if (type_file!=""):
-        return _read_file(path, type_file, delimeter=delimeter, optimization=optimization)
+        return _read_file(path, type_file, optimization=optimization, **kwargs)
     if (path[-4:]==".csv"):
-        return _read_file(path, type_file="csv", delimeter=delimeter, optimization=optimization)
+        return _read_file(path, type_file="csv", optimization=optimization, **kwargs)
     if (path[-5:]==".json"):
-        return _read_file(path, type_file="json", delimeter=delimeter, optimization=optimization) 
+        return _read_file(path, type_file="json", optimization=optimization, **kwargs) 
     if (type_file==""):
         raise NameError("Please, use typefile parameter for reading this file")
 
@@ -28,13 +28,13 @@ def read_file(path, type_file="", optimization=True, delimeter=','):
 # optimization - выполнение или невыполнение оптимизации
 # delimeter - делитель для csv файлов
 # Функция возвращает считанный датафрейм
-def _read_file(path, type_file, optimization, delimeter):
+def _read_file(path, type_file, optimization, **kwargs):
     if (type_file == "csv"):
         print("reading csv file...")
-        df = pd.read_csv(path, delimeter)
+        df = pd.read_csv(path, **kwargs)
     if (type_file == "json"):
         print("reading json file...")
-        df = pd.read_json(path)
+        df = pd.read_json(path, **kwargs)
     if (optimization==True):
         df = optimize_mem_usage(df, True)
     get_mem_usage(df)
@@ -44,7 +44,7 @@ def _read_file(path, type_file, optimization, delimeter):
 # df - датафрейм, для которого требуется узнать информацию о размере
 # print_inf - параметр, в зависимости от которого происходит или не происходит вывод через Print
 # Функция возвращает размер датафрейма
-def get_mem_usage(df, print_inf = True):
+def get_mem_usage(df, print_inf = False):
     df_mem = df.memory_usage().sum() / 1024**2
     if (print_inf == True):
         print("Memory usage of dataframe is {:.2f} MB".format(df_mem))
@@ -111,11 +111,18 @@ def missing_data(df):
         name = df.columns[i]
         cellNull = sum(df[name].isnull())
         proc = int(cellNull / cellAll * 100)
-        print("{}: {} ({}%)".format(name, cellNull, proc))
+        print("{}: {}/{} ({}%)".format(name, cellNull, cellAll, proc))
 
 # Выводит количество данных каждого типа
 # df - датафрейм		
 def count_types(df):
+    print('Every column:')
+    print(df.dtypes)
+    print('-----')
+    print('Summary:')
+    print(df.dtypes.value_counts())
+    print('-----')
+    print('All data:')
     d = dict()
     cellAll = df.shape[0]
     for i in range(df.shape[0]):

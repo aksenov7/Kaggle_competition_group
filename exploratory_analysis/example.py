@@ -5,8 +5,8 @@ submission = eda.read_file('sample_submission.csv', type_file="csv")
 print(eda.get_mem_usage(submission, print_inf = False))
 json_df = eda.read_file("Config", "json")
 
-#json_df = eda.optimize_mem_usage(json_df)
-#json_df
+json_df = eda.optimize_mem_usage(json_df)
+json_df
 
 
 titanic_df = eda.read_file("train_titanic.csv")
