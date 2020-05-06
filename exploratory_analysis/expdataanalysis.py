@@ -125,12 +125,12 @@ def count_types(df):
     print('All data:')
     d = dict()
     cellAll = df.shape[0]
-    for i in range(df.shape[0]):
-        for j in range(df.shape[1]):
-            cellType = type(df.iloc[i, j]).__name__
-            if not cellType in d:
-                d[cellType] = 0
-            d[cellType] += 1
+    for name in df.columns:
+        cellType = str(df[name].dtype)
+        
+        if not cellType in d:
+            d[cellType] = 0
+        d[cellType] += cellAll
     print(d)
 	
 
