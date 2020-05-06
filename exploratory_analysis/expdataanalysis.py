@@ -4,12 +4,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import math
 from pandas.plotting import scatter_matrix
+from IPython.display import display, HTML
 
 # Функция read_file используется для чтения файла в зависимости от его формата
 # path - путь к файлу
 # typefile - можно указать заранее тип файла (например, csv, json), чтобы не ориентироваться на расширение файла
 # optimization - позволяет по умолчанию выполнить оптимизацию файла в памяти
-# delimeter - делитель для csv файлов, по умолчанию "," (запятая)
+# **kwargs - передача специальных аргументов для функции чтения файла (например, delimeter, index_col)
 # При успешном определении типа файла либо при заданном типе файла функция возвращает результат
 # исполнения функции _read_file
 def read_file(path, type_file="", optimization=False, **kwargs):
@@ -26,7 +27,7 @@ def read_file(path, type_file="", optimization=False, **kwargs):
 # path - путь к файлу
 # typefile - определенный ранее тип файла (например, csv, json)
 # optimization - выполнение или невыполнение оптимизации
-# delimeter - делитель для csv файлов
+# **kwargs - передача специальных аргументов для функции чтения файла (например, delimeter, index_col)
 # Функция возвращает считанный датафрейм
 def _read_file(path, type_file, optimization, **kwargs):
     if (type_file == "csv"):
@@ -177,5 +178,32 @@ def plot_scatter_matrix(df, figsize=(10,5)):
     scatter_matrix(df, alpha=0.05, figsize=figsize)
     plt.show()
                                   
+# Функция get_description позволяет получить базовые стохастические характеристики (наибольшее, наименьшее, среднее, мода, медиана, ско)
+# df - исследуемый датафрейм
+# Функция возвращает датафрейм с полученными характеристиками 
+def get_description(df):
+    result = df.describe()
+    mode = df.mode(numeric_only=True).iloc[0].rename('mode')
+    med = df.median(skipna=True).rename('median')
+    result = result.append(mode).append(med)
+    return result
+    
+# Функция get_groip_description позволяет получить базовые стохастические характеристики (наибольшее, наименьшее, среднее, мода, медиана, ско) после группировки данных по определенному полю
+# df - исследуемый датафрейм
+# gb_column - поле для группировки
+# Функция выводит базовые характеристики каждого поля после группировки
+def get_group_description(df, gb_column):
+    for column in df.columns.drop(gb_column):
+        result = df[[column,gb_column]].groupby(gb_column).describe()
+        if df[column].dtype != object:
+            mode = df[[column,gb_column]].groupby(gb_column)[column].apply(lambda x: x.mode()[0])
+            mode = pd.DataFrame(mode)
+            mode.columns = pd.MultiIndex.from_product([mode.columns, ['mode']])
+            result = result.merge(mode, how='left', on=gb_column)
+
+            med = df[[column,gb_column]].groupby(gb_column).median()
+            med.columns = pd.MultiIndex.from_product([med.columns, ['median']])
+            result = result.merge(med, how='left', on=gb_column)
+        display(result)
         
     

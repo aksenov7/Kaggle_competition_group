@@ -17,5 +17,5 @@ print(eda.get_corr_matrix(titanic_df))
 eda.missing_data(titanic_df)
 eda.count_types(titanic_df)
 
-eda.plot_dependency_chart(titanic_df.loc[:, ['Age','PassengerId', 'Cabin','Fare']], 'Age', chart_in_str=2)
+eda.plot_dependency_chart(titanic_df.loc[:, ['Age','PassengerId', 'Fare']], 'Age', chart_in_str=2)
 eda.plot_scatter_matrix(titanic_df.loc[:, ~titanic_df.columns.isin(['Name', 'PassengerId', 'Pclass','Embarked'])])
