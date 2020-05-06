@@ -154,38 +154,47 @@ def plot_corr_matrix(df, figsize=(10,5), corr_method='pearson'):
 
 # Функция plot_dependency_chart строит графики зависимости одного поля (y) от других полей датафрейма
 # df - датафрейм, содержащий x-столбцы
-# y_column_label - текст - название столбца
-# figsize - размер выводимого графика, по умолчанию (10,5)
+# y - текст - название столбца
+# figsize - размер выводимого графика, по умолчанию (10,10)
 # chart_in_str - количество графиков в каждой строке, по умолчанию 3
 # Функция выводит полученные графики
-def plot_dependency_chart(df, y_column_label,figsize=(10,5), chart_in_str=3):
+def plot_dependency_chart(df, y, figsize=(10,10), chart_in_str=3):
     plt.figure(figsize=figsize)
-    iterator = 1
-    row = math.ceil(len(df.columns.drop([y_column_label])) / chart_in_str)
-    for column in df.columns.drop([y_column_label]):
+    df = df.select_dtypes(exclude='O')
+    row = math.ceil(len(df.columns.drop([y])) / chart_in_str)
+    for iterator, column in enumerate(df.columns.drop([y]), start=1):
         plt.subplot(row,chart_in_str,iterator)
-        plt.plot(df.loc[:,column], df[y_column_label], '.')
+        plt.plot(df.loc[:,column], df[y], '.')
         plt.xlabel(column)
-        plt.ylabel(y_column_label)
-        iterator = iterator + 1
+        plt.ylabel(y)
     plt.show()
+
+    #for i in range(0,len(df.columns), chart_in_str):
+    #    sns.pairplot(data=df,
+    #                 x_vars=df.columns[i:i+chart_in_str],
+    #                 y_vars=[y])
 
 # Функция plot_scatter_matrix строит матрицу графиков взаимной зависимости всех полей датафрейма ко всем полям
 # df - исследуемый датафрейм
-# figsize - размер выводимого графика, по умолчанию (10,5)
 # Функция выводит полученные графики
-def plot_scatter_matrix(df, figsize=(10,5)):
-    scatter_matrix(df, alpha=0.05, figsize=figsize)
+def plot_scatter_matrix(df, **kwargs):
+    sns.pairplot(df, **kwargs)
     plt.show()
 
-# Функция строит график разброса для каждого числового столбца датафрейма
+# Функция plot_scatter строит график разброса для каждого числового столбца датафрейма
 # df - исследуемый датафрейм
-def plot_scatter(df):
-    for name in df.columns:
-        t = str(df[name].dtype)
-        if t.find('int') == 0 or t.find('float') == 0:
-            plt.figure()
-            df.boxplot(column=[name])
+# y - название поля, для которого строится боксплот
+# unique_filter - позволяет убрать нагромажденные графики (по умолчанию = 10; если значение отрицательное, то фильтр не используется)
+# Функция выводит построенные графики
+def plot_scatter(df, y, unique_filter=10):
+    df.boxplot()
+    plt.show()
+    #df = df.select_dtypes(exclude='O')
+    for iterator, column in enumerate(df.columns.drop([y]), start=1):
+        if df[column].nunique()>unique_filter and unique_filter>0:
+            continue
+        sns.boxplot(data=df, x=column, y=y)
+        plt.show()
                                   
 # Функция get_description позволяет получить базовые стохастические характеристики (наибольшее, наименьшее, среднее, мода, медиана, ско)
 # df - исследуемый датафрейм
