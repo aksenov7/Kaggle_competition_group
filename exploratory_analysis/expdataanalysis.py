@@ -177,6 +177,15 @@ def plot_dependency_chart(df, y_column_label,figsize=(10,5), chart_in_str=3):
 def plot_scatter_matrix(df, figsize=(10,5)):
     scatter_matrix(df, alpha=0.05, figsize=figsize)
     plt.show()
+
+# Функция строит график разброса для каждого числового столбца датафрейма
+# df - исследуемый датафрейм
+def plot_scatter(df):
+    for name in df.columns:
+        t = str(df[name].dtype)
+        if t.find('int') == 0 or t.find('float') == 0:
+            plt.figure()
+            df.boxplot(column=[name])
                                   
 # Функция get_description позволяет получить базовые стохастические характеристики (наибольшее, наименьшее, среднее, мода, медиана, ско)
 # df - исследуемый датафрейм
