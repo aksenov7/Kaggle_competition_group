@@ -152,13 +152,13 @@ def plot_corr_matrix(df, figsize=(10,5), corr_method='pearson'):
     sns.heatmap(df.corr(method=corr_method),annot=True, linewidths=.1, fmt='.1f', ax=ax)
     plt.show()
 
-# Функция plot_dependency_chart строит графики зависимости одного поля (y) от других полей датафрейма
+# Функция plot_scatter строит графики зависимости одного поля (y) от других полей датафрейма
 # df - датафрейм, содержащий x-столбцы
 # y - текст - название столбца
 # figsize - размер выводимого графика, по умолчанию (10,10)
 # chart_in_str - количество графиков в каждой строке, по умолчанию 3
 # Функция выводит полученные графики
-def plot_dependency_chart(df, y, figsize=(10,10), chart_in_str=3):
+def plot_scatter(df, y, figsize=(10,10), chart_in_str=3):
     plt.figure(figsize=figsize)
     df = df.select_dtypes(exclude='O')
     row = math.ceil(len(df.columns.drop([y])) / chart_in_str)
@@ -181,12 +181,12 @@ def plot_scatter_matrix(df, **kwargs):
     sns.pairplot(df, **kwargs)
     plt.show()
 
-# Функция plot_scatter строит график разброса для каждого числового столбца датафрейма
+# Функция plot_boxplots строит графики выбросов для каждого числового столбца датафрейма
 # df - исследуемый датафрейм
 # y - название поля, для которого строится боксплот
 # unique_filter - позволяет убрать нагромажденные графики (по умолчанию = 10; если значение отрицательное, то фильтр не используется)
 # Функция выводит построенные графики
-def plot_scatter(df, y, unique_filter=10):
+def plot_boxplots(df, y, unique_filter=10):
     df.boxplot()
     plt.show()
     #df = df.select_dtypes(exclude='O')
