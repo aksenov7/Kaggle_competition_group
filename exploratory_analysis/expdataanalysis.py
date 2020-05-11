@@ -185,15 +185,20 @@ def plot_scatter_matrix(df, **kwargs):
 # df - исследуемый датафрейм
 # y - название поля, для которого строится боксплот
 # unique_filter - позволяет убрать нагромажденные графики (по умолчанию = 10; если значение отрицательное, то фильтр не используется)
+# turn - меняет ось x и y местами
+# **kwargs - передача специальных аргументов при необходимости
 # Функция выводит построенные графики
-def plot_boxplots(df, y, unique_filter=10):
+def plot_boxplots(df, y, unique_filter=10, turn=False, **kwargs):
     df.boxplot()
     plt.show()
     #df = df.select_dtypes(exclude='O')
     for iterator, column in enumerate(df.columns.drop([y]), start=1):
         if df[column].nunique()>unique_filter and unique_filter>0:
             continue
-        sns.boxplot(data=df, x=column, y=y)
+        if turn==False:
+            sns.boxplot(data=df, x=column, y=y, **kwargs)
+        else:
+            sns.boxplot(data=df, x=y, y=column, **kwargs)
         plt.show()
                                   
 # Функция get_description позволяет получить базовые стохастические характеристики (наибольшее, наименьшее, среднее, мода, медиана, ско)
