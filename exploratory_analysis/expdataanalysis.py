@@ -176,6 +176,7 @@ def plot_scatter(df, y, figsize=(10,10), chart_in_str=3):
 
 # Функция plot_scatter_matrix строит матрицу графиков взаимной зависимости всех полей датафрейма ко всем полям
 # df - исследуемый датафрейм
+# **kwargs - передача специальных аргументов при необходимости
 # Функция выводит полученные графики
 def plot_scatter_matrix(df, **kwargs):
     sns.pairplot(df, **kwargs)
