@@ -18,29 +18,26 @@
 make install
 ```
 
-## Nodes
-Абстрактные ноды лежат в `nodes/core.py`:
-    - `IterableModifierNode` для обработки массива идентичных данных
-    - `OnetoOneModifierNode` для обработки одного экземпляра данных
+## Tools
+Абстрактные ноды лежат в `nlp_tools/core.py`:
+  - `IterableModifierNode` для обработки массива идентичных данных
+  - `OnetoOneModifierNode` для обработки одного экземпляра данных
 
-Ноды, реализующие препроцессинг лежат в `nodes/text_preprocessing.py`:
-    - `RegexpNode` базовая нода, применяющая набор регулярок из входного параметра `pattern_to_sub_dict`
-    - `RegexpTrashReplaceNode` преднастроенная нода с набором дефолтных регулярок, которая заменяет мусор на пустоту
+Ноды, реализующие препроцессинг лежат в `nlp_tools/text_preprocessing.py`:
+  - `RegexpNode` базовая нода, применяющая набор регулярок из входного параметра `pattern_to_sub_dict`
+  - `RegexpTrashReplaceNode` преднастроенная нода с набором дефолтных регулярок, которая заменяет мусор на пустоту
 
-Ноды, реализующие токенизацию лежат в `nodes/text_tokenizing.py`
-    - `SpaceTokenizerNode` простой токенизатор, разбивающий текст по пробелам
-    - `NLTKTokenizerNode` базовая нода, предустанавливающая параметры для модуля `nltk`
-    - `WordNLTKTokenizerNode` преднастроенная нода, использующая для токенизации `nltk.word_tokenize`
-    - `SentenceNLTKTokenizerNode` преднастроенная нода, использующая для токенизации `nltk.sent_tokenize`
+Ноды, реализующие токенизацию лежат в `nlp_tools/text_tokenizing.py`
+  - `SpaceTokenizerNode` простой токенизатор, разбивающий текст по пробелам
+  - `NLTKTokenizerNode` базовая нода, предустанавливающая параметры для модуля `nltk`
+  - `WordNLTKTokenizerNode` преднастроенная нода, использующая для токенизации `nltk.word_tokenize`
+  - `SentenceNLTKTokenizerNode` преднастроенная нода, использующая для токенизации `nltk.sent_tokenize`
 
-Ноды, реализующие векторизацию лежат в `nodes/text_vectorizers.py`:
-    - `VectorizingNode` базовый узел, который осуществляет инициализацию векторизатора
-    - `SKLearnCountVectorizerNode` преднастроенная нода, использующая для векторизации `sklearn.feature_extraction.text.CountVectorizer`
-    - `SKLearnTfidVectorizerNode` преднастроенная нода, использующая для векторизации `sklearn.feature_extraction.text.TfidfVectorizer`
+Ноды, реализующие векторизацию лежат в `nlp_tools/text_vectorizers.py`:
+  - `VectorizingNode` базовый узел, который осуществляет инициализацию векторизатора
+  - `SKLearnCountVectorizerNode` преднастроенная нода, использующая для векторизации `sklearn.feature_extraction.text.CountVectorizer`
+  - `SKLearnTfidVectorizerNode` преднастроенная нода, использующая для векторизации `sklearn.feature_extraction.text.TfidfVectorizer`
 
 
 ## Examples
 Все примеры использования имеющихся нод можно увидеть в `test.py`
-
-## TODO
-Дописать про `nlp_tools/models.py.`
